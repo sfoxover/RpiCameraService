@@ -3,6 +3,7 @@ cmake_minimum_required (VERSION 3.8)
 
 project ("RPiCameraService")
 
+set(default_build_type "Release")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -10,6 +11,12 @@ if(NOT WIN32)
 	add_definitions(-std=c++17 -Wno-psabi)
 else()
 	add_definitions(-D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
+endif()
+
+if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+    	message("Building in DEBUG mode...")
+else()
+	message("Building in RELEASE mode...")
 endif()
 
 # control where the static and shared libraries are built so that on windows we don't need to tinker with the path to run the executable
