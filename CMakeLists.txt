@@ -27,8 +27,8 @@ find_package(dlib REQUIRED)
 add_subdirectory("Imports/JsoncppLib")
 add_subdirectory("Imports/MessagesLib")
 add_subdirectory("Imports/AiDetectLib")
+add_subdirectory("Imports/GTestLib")
 add_subdirectory ("CameraService")
-
-
+add_subdirectory("test")
 
 
