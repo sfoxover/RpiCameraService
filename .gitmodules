@@ -10,3 +10,7 @@
 	path = Imports/AiDetectLib
 	url = https://github.com/sfoxover/AiDetectLib.git
 	branch = master
+[submodule "Imports/GTestLib"]
+	path = Imports/GTestLib
+	url = https://github.com/sfoxover/GTestLib.git
+	branch = master

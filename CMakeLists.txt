@@ -1,7 +1,7 @@
 ﻿# CMakeList.txt : Top-level CMake project file, do global configuration
 cmake_minimum_required (VERSION 3.8)
 
-project ("RPiCamera")
+project ("RPiCameraService")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -19,24 +19,15 @@ set(CMAKE_EXECUTABLE_OUTPUT_DIRECTORY, "${PROJECT_BINARY_DIR}")
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
-enable_testing()
-
 find_package(OpenCV REQUIRED)
 find_package(ZeroMQ REQUIRED)
 find_package(dlib REQUIRED)
 
 # Include sub-projects.
-add_subdirectory("JsoncppLib")
-add_subdirectory("MessagesLib")
-add_subdirectory("AiDetectLib")
+add_subdirectory("Imports/JsoncppLib")
+add_subdirectory("Imports/MessagesLib")
+add_subdirectory("Imports/AiDetectLib")
 add_subdirectory ("CameraService")
-if(NOT WIN32)
-	add_subdirectory("GPIOLib")
-else()
-	add_subdirectory("RPiClientWrapperLib")
-endif()	
-add_subdirectory("GTestLib")
-add_subdirectory("test")
 
 
 
