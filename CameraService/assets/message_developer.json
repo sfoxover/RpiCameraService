@@ -1,0 +1,22 @@
+{
+	"Publisher": {
+		"Endpoints": [
+			"tcp://*:5563"
+		]	
+	},
+	"Subscriber": {
+		"Endpoints": [
+			"tcp://127.0.0.1:5563"
+		]
+	},
+	"VideoSettings": {
+		"StreamSampleVideo": false,
+		"SampleVideoName": "Serenity.mp4",
+		"RunFaceDetection": false,
+		"FaceDetectionMethod": "OpenCV"
+	},
+	"VideoCamTopic": "VideoCam",
+	"VideoSampleTopic": "VideoSample",
+	"FaceDetectTopic": "FaceDetect",
+	"MotionSensorTopic": "MotionSensor"
+}
