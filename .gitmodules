@@ -1,0 +1,12 @@
+[submodule "Imports/MessagesLib"]
+	path = Imports/MessagesLib
+	url = https://github.com/sfoxover/MessagesLib.git
+	branch = master
+[submodule "Imports/JsoncppLib"]
+	path = Imports/JsoncppLib
+	url = https://github.com/sfoxover/JsoncppLib.git
+	branch = master
+[submodule "Imports/AiDetectLib"]
+	path = Imports/AiDetectLib
+	url = https://github.com/sfoxover/AiDetectLib.git
+	branch = master
