@@ -30,7 +30,11 @@ endif()
 target_include_directories(${RPICAMERA_NAME} PUBLIC include PRIVATE src)
 
 # Copy config file
-configure_file("${PROJECT_SOURCE_DIR}/CameraService/assets/message_developer.json" "${CMAKE_BINARY_DIR}/bin/message_developer.json" COPYONLY)
+file(COPY "${PROJECT_SOURCE_DIR}/CameraService/assets/message_developer.json" DESTINATION "${CMAKE_BINARY_DIR}/bin/")
+
+# Copy Face detection files to /assets folder
+file(GLOB AI_ASSETS "${PROJECT_SOURCE_DIR}/Imports/AiDetectLib/assets/*")
+file(COPY ${AI_ASSETS} DESTINATION "${CMAKE_BINARY_DIR}/bin/assets/")
 
 install(FILES "${CMAKE_BINARY_DIR}/bin/${RPICAMERA_NAME}" "${PROJECT_SOURCE_DIR}/CameraService/assets/message_developer.json" 
 		DESTINATION /opt/${RPICAMERA_NAME}

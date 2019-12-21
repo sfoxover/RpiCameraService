@@ -45,7 +45,7 @@ int main()
 	// Load sample video
 	if (CSettings::Instance().GetUseSampleVideo())
 	{
-		auto filePath = Helpers::AppendToRunPath(CSettings::Instance().GetSampleVideoName());
+		auto filePath = Helpers::AppendToRunPath(Helpers::AppendPath("assets", CSettings::Instance().GetSampleVideoName()));
 		bool exists = Helpers::FileExists(filePath);
 		assert(exists);
 
