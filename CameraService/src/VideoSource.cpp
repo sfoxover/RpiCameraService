@@ -78,6 +78,15 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis, std::future<void> f
 	bool bOK = true;
 	std::wstring error;
 	long delay = (long)(1000 / fps);
+	std::string topic;
+	if (CSettings::Instance().GetUseSampleVideo())
+	{
+		topic = CSettings::Instance().GetVideoSampleTopic();
+	}
+	else
+	{
+		topic = CSettings::Instance().GetVideoCamTopic();
+	}
 	std::future_status waitResult;
 	do
 	{
@@ -98,22 +107,21 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis, std::future<void> f
 			
 			// Load message with video frame
 			CMessage msg;
-			if (CSettings::Instance().GetUseSampleVideo())
-			{
-				msg.CreateMessageFromMatFrame(CSettings::Instance().GetVideoSampleTopic(), image, fps);
-			}
-			else
-			{
-				msg.CreateMessageFromMatFrame(CSettings::Instance().GetVideoCamTopic(), image, fps);
-			}
+			msg.CreateMessageFromMatFrame(topic, image, fps);
 			bOK = CPublishMessage::Instance().SendMessageData(msg, error);
 			assert(bOK);
 			
-			waitResult = futureObj.wait_for(std::chrono::milliseconds(10));
+			waitResult = futureObj.wait_for(std::chrono::milliseconds(delay));
 		}
 		else
 		{
-			waitResult = futureObj.wait_for(std::chrono::milliseconds(delay));
+			waitResult = futureObj.wait_for(std::chrono::milliseconds(10));
+
+			// Restart sample video from beginning
+			if (CSettings::Instance().GetUseSampleVideo())
+			{
+				pThis->_opencvCaputure.set(cv::CAP_PROP_POS_FRAMES, 0);
+			}
 		}
 	} while (waitResult == std::future_status::timeout);
 
