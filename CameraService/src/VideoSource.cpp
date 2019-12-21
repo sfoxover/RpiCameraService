@@ -96,18 +96,15 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis, std::future<void> f
 				}
 			}
 			
-			// Use mat buffer to avoid cpu cost for conversion
-			std::vector<uchar> videoBuffer(image.datastart, image.dataend);
-
 			// Load message with video frame
 			CMessage msg;
 			if (CSettings::Instance().GetUseSampleVideo())
 			{
-				msg.CreateMessageFromBuffer(CSettings::Instance().GetVideoSampleTopic(), CMessage::VideoSample, videoBuffer);
+				msg.CreateMessageFromMatFrame(CSettings::Instance().GetVideoSampleTopic(), image, fps);
 			}
 			else
 			{
-				msg.CreateMessageFromBuffer(CSettings::Instance().GetVideoCamTopic(), CMessage::VideoCam, videoBuffer);
+				msg.CreateMessageFromMatFrame(CSettings::Instance().GetVideoCamTopic(), image, fps);
 			}
 			bOK = CPublishMessage::Instance().SendMessageData(msg, error);
 			assert(bOK);

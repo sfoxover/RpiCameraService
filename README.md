@@ -34,7 +34,7 @@ ZeroMQ for linux
 * cmake .. && make -j 4
 * make test && make install && sudo ldconfig
 
-DLib for Windows
+DLib 
 * go to site http://dlib.net/compile.html
 * download latest zip file
 * configure with cmake guid
@@ -52,11 +52,21 @@ Set permission for Ubuntu
 * sudo chown root.gpio /dev/gpiochip*
 * sudo chmod g+rw /dev/gpiochip*
 
-
 GTest unit tests
 * download https://github.com/google/googletest/archive/master.zip
 * use CMake gui
 build, install and set environment with gtest_DIR to path C:\Program Files (x86)\googletest-distribution\lib\cmake
+
+CMake 3.16.2 Install on Ubuntu
+* sudo apt-get purge cmake
+* sudo apt-get install libssl-dev
+* wget https://github.com/Kitware/CMake/releases/download/v3.16.2/cmake-3.16.2.tar.gz
+* tar -xzvf cmake-3.16.2.tar.gz
+* cd cmake-3.16.2
+* ./bootstrap
+* make -j4
+* sudo make install
+
 
 ## Recommended extensions for Visual Studio Code
 * "Remote Development" - Microsoft. https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack
