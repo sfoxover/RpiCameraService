@@ -9,7 +9,7 @@ include(GoogleTest)
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 file(GLOB_RECURSE HEADERS "src/*.h" "include/*.h")
 
-include_directories(include ${OpenCV_INCLUDE_DIRS} ${dlib_INCLUDE_DIRS} "${gtest_SOURCE_DIR}/include")
+include_directories(include ${OpenCV_INCLUDE_DIRS} "${gtest_SOURCE_DIR}/include")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
@@ -19,6 +19,7 @@ GTEST_ADD_TESTS(${PROJECT_NAME} "${TestArgs}" ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME} gtest)
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
+target_link_libraries(${PROJECT_NAME} dlib::dlib)
 target_link_libraries(${PROJECT_NAME} libzmq-static)
 target_link_libraries(${PROJECT_NAME} MessagesLib)
 target_link_libraries(${PROJECT_NAME} AiDetectLib)
@@ -27,5 +28,3 @@ if(NOT WIN32)
 	#target_link_libraries(${PROJECT_NAME} GPIOLib)
 endif()
 
-# copy test files
-configure_file("${PROJECT_SOURCE_DIR}/test/assets/message_developer.json" "${CMAKE_BINARY_DIR}/bin/message_developer.json" COPYONLY)

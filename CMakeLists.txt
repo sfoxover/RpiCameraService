@@ -14,7 +14,7 @@ else()
 endif()
 
 if(CMAKE_BUILD_TYPE MATCHES DEBUG)
-    	message("Building in DEBUG mode...")
+    message("Building in DEBUG mode...")
 else()
 	message("Building in RELEASE mode...")
 endif()
