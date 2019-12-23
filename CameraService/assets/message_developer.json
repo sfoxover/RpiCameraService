@@ -1,19 +1,8 @@
 {
-	"Publisher": {
-		"Endpoints": [
-			"tcp://*:5563"
-		]
-	},
-	"Subscriber": {
-		"Endpoints": [
-			"tcp://127.0.0.1:5563"
-		]
-	},
-	"CmdServer": {
-		"Endpoints": [
-			"tcp://*:5564"
-		]
-	},
+	"PublisherEndpoint": "tcp://*:5563",
+	"SubscriberEndpoint": "tcp://127.0.0.1:5563",
+	"CmdServerEndpoint": "tcp://*:5564",
+	"CmdClientEndpoint": "tcp://127.0.0.1:5564",
 	"VideoSettings": {
 		"StreamSampleVideo": true,
 		"SampleVideoName": "Serenity.mp4",

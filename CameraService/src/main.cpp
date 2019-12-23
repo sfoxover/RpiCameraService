@@ -34,7 +34,7 @@ int main()
 		}
 
 		// Set up publisher endpoints
-		bOK = CPublishMessage::Instance().Initialize(CSettings::Instance().GetPublishUris(), error);
+		bOK = CPublishMessage::Instance().Initialize(CSettings::Instance().GetPublishUri(), error);
 		assert(bOK);
 
 		// Set up command server endpoints

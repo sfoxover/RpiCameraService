@@ -109,18 +109,12 @@ TEST(CTestJson, TestJsonConfigFile)
     std::string path = Helpers::AppendToRunPath("message_developer.json");
     auto settingsMap = MessageHelper::LoadSettingsFromConfig(path);
 
-    std::map<std::string, std::any> publisher;
-    CASTANY(settingsMap["Publisher"], publisher);
-    std::vector<std::any> uris;
-    CASTANY(publisher["Endpoints"], uris);
+    std::string value;
+    // Load publisher endpoint
+    CASTANY(settingsMap["PublisherEndpoint"], value);
+    ASSERT_TRUE(value == "tcp://*:5563") << "CTestJson, TestJsonConfigFile failed PublisherEndpoint test.";
 
-    std::string uri;
-    CASTANY(uris[0], uri);
-    ASSERT_TRUE(uris.size() == 1 && uri == "tcp://*:5563") << "CTestJson, TestJsonConfigFile failed publisher test.";
-
-    std::map<std::string, std::any> subscriber;
-    CASTANY(settingsMap["Subscriber"], subscriber);
-    CASTANY(subscriber["Endpoints"], uris);
-    CASTANY(uris[0], uri);
-    ASSERT_TRUE(uris.size() == 1 && uri == "tcp://127.0.0.1:5563") << "CTestJson, TestJsonConfigFile failed publisher test.";
+    // Command server endpoint
+    CASTANY(settingsMap["CmdServerEndpoint"], value);
+    ASSERT_TRUE(value == "tcp://*:5564") << "CTestJson, TestJsonConfigFile failed CmdServerEndpoint test.";
 }
