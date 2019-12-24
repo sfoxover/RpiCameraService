@@ -74,13 +74,12 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis, std::future<void> f
 	if (fps == 0)
 		fps = 30;
 
-	bool detectFaces = CSettings::Instance().GetUseFaceDetect();
 	bool useSampleVideo = CSettings::Instance().GetUseSampleVideo();
 	uint64_t frameCount = 0;
 	bool bOK = true;
 	std::wstring error;
 	long delay = (long)(1000 / fps);
-	if (detectFaces)
+	if (CSettings::Instance().GetUseFaceDetect())
 	{
 		delay = 10;
 	}
@@ -103,7 +102,7 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis, std::future<void> f
 			frameCount++;
 			
 			// Do face detection
-			if (detectFaces)
+			if (CSettings::Instance().GetUseFaceDetect())
 			{
 				if (SKIP_FRAME_NUM == 0 || (frameCount % SKIP_FRAME_NUM) == 0)
 				{

@@ -90,7 +90,7 @@ TEST(CTestJson, TestOperatorOverload)
 
     // Make sure json data size is correct
     std::any size;
-    message2.GetHeaderMapValue("data_size", size);
+    ASSERT_TRUE(message2.GetHeaderMapValue("data_size", size));
     ASSERT_TRUE(std::any_cast<uint64_t>(size) == 3);
 
     std::vector<unsigned char> data;

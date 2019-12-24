@@ -11,7 +11,7 @@
 #endif
 #include "Settings.h"
 #include "DetectFaces.h"
-#include <CommandServer.h>
+#include "CommandServer.h"
 
 int main()
 {
@@ -30,37 +30,41 @@ int main()
 		// Initialize facial detection
 		if (CSettings::Instance().GetUseFaceDetect())
 		{
-			CDetectFaces::Instance().Initialize(CSettings::Instance().GetFaceDetectMethod());
+			bOK = CDetectFaces::Instance().Initialize(CSettings::Instance().GetFaceDetectMethod(), error);
+			assert(bOK);
 		}
 
 		// Set up publisher endpoints
-		bOK = CPublishMessage::Instance().Initialize(CSettings::Instance().GetPublishUri(), error);
-		assert(bOK);
-
-		// Set up command server endpoints
 		if (bOK)
 		{
-			bOK = CommandServer::Instance().Start(error);
+			bOK = CPublishMessage::Instance().Initialize(CSettings::Instance().GetPublishUri(), error);
 			assert(bOK);
 
-			// Load sample video
+			// Set up command server endpoints
 			if (bOK)
 			{
-				if (CSettings::Instance().GetUseSampleVideo())
-				{
-					auto filePath = Helpers::AppendToRunPath(Helpers::AppendPath("assets", CSettings::Instance().GetSampleVideoName()));
-					bool exists = Helpers::FileExists(filePath);
-					assert(exists);
+				bOK = CommandServer::Instance().Start(error);
+				assert(bOK);
 
-					// Publish video stream
-					bOK = CVideoSource::Instance().Start(Helpers::Utf8ToWide(filePath), error);
-					assert(bOK);
-				}
-				else
+				// Load sample video
+				if (bOK)
 				{
-					// Publish camera stream
-					bOK = CVideoSource::Instance().Start(error);
-					assert(bOK);
+					if (CSettings::Instance().GetUseSampleVideo())
+					{
+						auto filePath = Helpers::AppendToRunPath(Helpers::AppendPath("assets", CSettings::Instance().GetSampleVideoName()));
+						bool exists = Helpers::FileExists(filePath);
+						assert(exists);
+
+						// Publish video stream
+						bOK = CVideoSource::Instance().Start(Helpers::Utf8ToWide(filePath), error);
+						assert(bOK);
+					}
+					else
+					{
+						// Publish camera stream
+						bOK = CVideoSource::Instance().Start(error);
+						assert(bOK);
+					}
 				}
 			}
 		}
