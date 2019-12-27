@@ -5,6 +5,7 @@
 #include <MessageHelper.h>
 #include <helpers.h>
 #include <DetectFaces.h>
+#include "VideoSource.h"
 
 CommandServer::CommandServer()
 {
@@ -119,7 +120,7 @@ bool CommandServer::RunCommand(CMessage& command, std::wstring& error)
 		// Change Face detect AI method
 		if (runCommand == "SetAIMethod")
 		{
-			bool bOK = CDetectFaces::Instance().Initialize(commandArgs, error);
+			bool bOK = CDetectFaces::Instance().Initialize(commandArgs, &CVideoSource::PublishDetectedFaces, error);
 			if (bOK)
 			{
 				CSettings::Instance().SetUseFaceDetect(commandArgs != "Off");

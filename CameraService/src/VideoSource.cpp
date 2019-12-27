@@ -78,11 +78,7 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis, std::future<void> f
 	uint64_t frameCount = 0;
 	bool bOK = true;
 	std::wstring error;
-	long delay = (long)(1000 / fps);
-	if (CSettings::Instance().GetUseFaceDetect())
-	{
-		delay = 10;
-	}
+	double delay = (double)(1000 / fps);
 	std::string topic;
 	if (useSampleVideo)
 	{
@@ -106,7 +102,7 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis, std::future<void> f
 			{
 				if (SKIP_FRAME_NUM == 0 || (frameCount % SKIP_FRAME_NUM) == 0)
 				{
-					CDetectFaces::Instance().DetectFaces(image, true);
+					CDetectFaces::Instance().AddImageToQueue(image);
 				}
 			}
 			
@@ -116,7 +112,7 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis, std::future<void> f
 			bOK = CPublishMessage::Instance().SendMessageData(msg, error);
 			assert(bOK);
 			
-			waitResult = futureObj.wait_for(std::chrono::milliseconds(delay));
+			waitResult = futureObj.wait_for(std::chrono::milliseconds((int64_t)delay));
 		}
 		else
 		{
@@ -131,4 +127,14 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis, std::future<void> f
 	} while (waitResult == std::future_status::timeout);
 
 	pThis->_opencvCaputure.release();
+}
+
+// Publish detected face images to zeroMq subscribers
+void CVideoSource::PublishDetectedFaces(cv::Mat image)
+{
+	std::wstring error;
+	CMessage msg;
+	msg.CreateMessageFromFaceDetectedMatFrame(CSettings::Instance().GetFaceDetectTopic(), image);
+	bool bOK = CPublishMessage::Instance().SendMessageData(msg, error);
+	assert(bOK);
 }

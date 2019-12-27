@@ -43,4 +43,7 @@ public:
 
 	// Video streaming thread
 	static void VideoStreamingThread(CVideoSource* pThis, std::future<void> futureObj);	
+
+	// Publish detected face images to zeroMq subscribers
+	static void PublishDetectedFaces(cv::Mat image);
 };

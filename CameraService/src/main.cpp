@@ -30,7 +30,7 @@ int main()
 		// Initialize facial detection
 		if (CSettings::Instance().GetUseFaceDetect())
 		{
-			bOK = CDetectFaces::Instance().Initialize(CSettings::Instance().GetFaceDetectMethod(), error);
+			bOK = CDetectFaces::Instance().Initialize(CSettings::Instance().GetFaceDetectMethod(), &CVideoSource::PublishDetectedFaces, error);
 			assert(bOK);
 		}
 

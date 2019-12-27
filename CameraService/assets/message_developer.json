@@ -6,7 +6,7 @@
 	"VideoSettings": {
 		"StreamSampleVideo": true,
 		"SampleVideoName": "Serenity.mp4",
-		"RunFaceDetection": false,
+		"RunFaceDetection": true,
 		"FaceDetectionMethod": "OpenCV"
 	},
 	"VideoCamTopic": "VideoCam",
