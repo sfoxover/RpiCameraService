@@ -25,7 +25,7 @@
       "variables": [
         {
           "name": "CMAKE_BUILD_TYPE",
-          "value": "RelWithDebInfo",
+          "value": "Release",
           "type": "STRING"
         },
         {

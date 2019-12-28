@@ -133,8 +133,10 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis, std::future<void> f
 void CVideoSource::PublishDetectedFaces(cv::Mat image)
 {
 	std::wstring error;
+	int imagesPerSecond = 0;
+	CDetectFaces::Instance().GetImagesPerSecond(imagesPerSecond);
 	CMessage msg;
-	msg.CreateMessageFromFaceDetectedMatFrame(CSettings::Instance().GetFaceDetectTopic(), image);
+	msg.CreateMessageFromFaceDetectedMatFrame(CSettings::Instance().GetFaceDetectTopic(), image, imagesPerSecond);
 	bool bOK = CPublishMessage::Instance().SendMessageData(msg, error);
 	assert(bOK);
 }
