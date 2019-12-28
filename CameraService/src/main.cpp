@@ -15,6 +15,8 @@
 
 int main()
 {
+	std::ios_base::Init init;
+
 	// Load settings from json file
 	bool bOK = true;
 	std::wstring error;
