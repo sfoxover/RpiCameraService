@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "gdb",
+            "request": "launch",
+            "name": "Debug Linux",
+            "target": "./build/bin/CameraService",
+            "cwd": "${workspaceRoot}",
+            "valuesFormatting": "parseText"
+        },
+
+        {
             "name": "(Windows) Launch",
             "type": "cppvsdbg",
             "request": "launch",

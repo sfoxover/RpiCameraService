@@ -5,6 +5,7 @@
 #include <thread>
 #include <future>
 #include <chrono>
+#include <condition_variable>
 #include <opencv2/opencv.hpp>
 
 class CVideoSource
@@ -15,11 +16,17 @@ private:
 
 private:
 // Properties
-	// Exit thread signal
-	std::unique_ptr<std::promise<void>> _stopThreadSignal;
 	
 	// Streaming thread
 	std::thread _videoThread;
+
+	// Wait event will signal if exiting
+	std::condition_variable _stopWaitEvent;
+	std::mutex _stopWaitEventLock;
+
+	// Exit thread flag
+	bool _exitingFlag;
+	std::mutex _exitingFlagLock;
 
 	// Open cv video capture
 	cv::VideoCapture _opencvCaputure;
@@ -32,6 +39,10 @@ public:
 		return instance;
 	}
 
+	// Get set for _exitingFlag
+	void GetExitingFlag(bool &value);
+	void SetExitingFlag(bool value);
+
 	// Start streaming video from file
 	bool Start(std::wstring filePath, std::wstring& error);
 	
@@ -42,7 +53,7 @@ public:
 	bool Stop(std::wstring& error);
 
 	// Video streaming thread
-	static void VideoStreamingThread(CVideoSource* pThis, std::future<void> futureObj);	
+	static void VideoStreamingThread(CVideoSource* pThis);	
 
 	// Publish detected face images to zeroMq subscribers
 	static void PublishDetectedFaces(cv::Mat image);
