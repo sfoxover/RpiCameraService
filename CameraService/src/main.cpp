@@ -1,3 +1,6 @@
+#ifdef _WIN32
+	#include "windows.h"
+#endif
 #include "defines.h"
 #include "VideoSource.h"
 #include "PublishMessage.h"
@@ -6,12 +9,10 @@
 #include "MessageHelper.h"
 #include <cassert>
 #include <filesystem>
-#ifdef _WIN32
-#include "windows.h"
-#endif
 #include "Settings.h"
 #include "DetectFaces.h"
 #include "CommandServer.h"
+#include <ProfileMessages.h>
 
 int main()
 {
@@ -66,9 +67,16 @@ int main()
 						// Publish camera stream
 						bOK = CVideoSource::Instance().Start(error);
 						assert(bOK);
-					}
-				}
+					}				
+				}			
 			}
+		}
+
+		// Start profiling messages
+		if (bOK)
+		{
+			bOK = CProfileMessages::Instance().Start(error);
+			assert(bOK);
 		}
 	}
 	if (bOK)

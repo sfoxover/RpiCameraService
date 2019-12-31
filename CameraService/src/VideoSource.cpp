@@ -7,6 +7,7 @@
 #include <inttypes.h>
 #include <MessageHelper.h>
 #include "Settings.h"
+#include "MessageFactory.h"
 
 CVideoSource::CVideoSource()
 {
@@ -120,8 +121,7 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis)
 				}
 				
 				// Load message with video frame
-				CMessage msg;
-				msg.CreateMessageFromMatFrame(topic, image, fps);
+				CMessage msg = MessageFactory::Create(topic, CMessage::MessageType::OpenCVMatFrame, image, fps);
 				bOK = CPublishMessage::Instance().SendMessageData(msg, error);
 				assert(bOK);				
 			}
@@ -154,10 +154,7 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis)
 void CVideoSource::PublishDetectedFaces(cv::Mat image)
 {
 	std::wstring error;
-	int imagesPerSecond = 0;
-	CDetectFaces::Instance().GetImagesPerSecond(imagesPerSecond);
-	CMessage msg;
-	msg.CreateMessageFromFaceDetectedMatFrame(CSettings::Instance().GetFaceDetectTopic(), image, imagesPerSecond);
+	CMessage msg = MessageFactory::Create(CSettings::Instance().GetFaceDetectTopic(), CMessage::MessageType::FaceDetection, image);
 	bool bOK = CPublishMessage::Instance().SendMessageData(msg, error);
 	assert(bOK);
 }

@@ -1,5 +1,6 @@
 #include "TestJson.h"
 #include "MessageHelper.h"
+#include "MessageFactory.h"
 #include "helpers.h"
 #include <any>
 #include "json/json.h"
@@ -51,8 +52,7 @@ TEST(CTestJson, TestWriteJsonBufferMatches)
     std::map<std::string, std::any> values;
     values["state"] = true;
     values["sensor"] = "motion";
-    CMessage message1;
-    message1.CreateMessageFromJson("unitTest", CMessage::MotionSensor, values);
+    CMessage message1 = MessageFactory::Create("unitTest", CMessage::MotionSensor, values);
 
     std::vector<unsigned char> data;
     message1.SerializeMessageToBuffer(data);
@@ -74,8 +74,7 @@ TEST(CTestJson, TestOperatorOverload)
     std::map<std::string, std::any> values;
     values["state"] = false;
     values["sensor"] = "motion";
-    CMessage message1;
-    message1.CreateMessageFromJson("unitTest", CMessage::MotionSensor, values);
+    CMessage message1 = MessageFactory::Create("unitTest", CMessage::MotionSensor, values);
 
     // Add custom header data
     message1.SetHeaderMapValue("is_key_frame", true);

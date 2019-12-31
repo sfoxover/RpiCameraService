@@ -12,5 +12,6 @@
 	"VideoCamTopic": "VideoCam",
 	"VideoSampleTopic": "VideoSample",
 	"FaceDetectTopic": "FaceDetect",
-	"MotionSensorTopic": "MotionSensor"
+	"MotionSensorTopic": "MotionSensor",
+	"ProfilingTopic": "Profiling"
 }
