@@ -87,7 +87,7 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis)
 	uint64_t frameCount = 0;
 	bool bOK = true;
 	std::wstring error;
-	double delay = (double)(1000 / fps);
+	double fpsDelay = (double)(1000 / fps);
 	std::string topic;
 	if (useSampleVideo)
 	{
@@ -103,6 +103,7 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis)
 		pThis->GetExitingFlag(exiting);
 		if (!exiting)
 		{
+			auto tmStart = std::chrono::high_resolution_clock::now();
 			cv::Mat image;
 			pThis->_opencvCaputure.read(image);
 			if (!image.empty())
@@ -132,8 +133,16 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis)
 					pThis->_opencvCaputure.set(cv::CAP_PROP_POS_FRAMES, 0);
 				}
 			}
+
+			// Subtract time taken to read frame from fps delay
+			auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - tmStart);
+			auto waitDelay = fpsDelay - elapsed.count();
+			if (waitDelay <= 0)
+				waitDelay = 1;
+
+			// Pause for correct fps
 			std::unique_lock<std::mutex> lock(pThis->_stopWaitEventLock);
-			pThis->_stopWaitEvent.wait_for(lock, std::chrono::milliseconds((uint64_t)delay));
+			pThis->_stopWaitEvent.wait_for(lock, std::chrono::milliseconds((uint64_t)waitDelay));
 		}
 	} 
 	while (!exiting);
