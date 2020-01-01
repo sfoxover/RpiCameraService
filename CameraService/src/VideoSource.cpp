@@ -80,15 +80,15 @@ bool CVideoSource::Stop(std::wstring &error)
 // Video streaming thread
 void CVideoSource::VideoStreamingThread(CVideoSource *pThis)
 {
-	double fps = pThis->_opencvCaputure.get(cv::CAP_PROP_FPS);
-	if (fps == 0)
-		fps = 30;
+	double sourceFps = pThis->_opencvCaputure.get(cv::CAP_PROP_FPS);
+	if (sourceFps == 0)
+		sourceFps = 30;
 
 	bool useSampleVideo = CSettings::Instance().GetUseSampleVideo();
 	uint64_t frameCount = 0;
 	bool bOK = true;
 	std::wstring error;
-	double fpsDelay = (double)(1000 / fps);
+	double fpsDelay = (double)(1000 / sourceFps);
 	std::string topic;
 	if (useSampleVideo)
 	{
@@ -119,9 +119,14 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis)
 						CDetectFaces::Instance().AddImageToQueue(image);
 					}
 				}
+
+				// Encode image
+				std::vector<uchar> jpgBuffer;
+				cv::imencode(".jpg", image, jpgBuffer);
 				
 				// Load message with video frame
-				CMessage msg = MessageFactory::Create(topic, CMessage::MessageType::OpenCVMatFrame, image, fps);
+				CMessage msg = MessageFactory::Create(topic, CMessage::MessageType::JpegFrame | CMessage::MessageType::Video, jpgBuffer);
+				msg.SetHeaderMapValue("fps", sourceFps);
 				bOK = CPublishMessage::Instance().SendMessageData(msg, error);
 				assert(bOK);				
 			}
@@ -154,7 +159,7 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis)
 void CVideoSource::PublishDetectedFaces(cv::Mat image)
 {
 	std::wstring error;
-	CMessage msg = MessageFactory::Create(CSettings::Instance().GetFaceDetectTopic(), CMessage::MessageType::FaceDetection, image);
+	CMessage msg = MessageFactory::Create(CSettings::Instance().GetFaceDetectTopic(), CMessage::MessageType::Video | CMessage::MessageType::FaceDetection, image);
 	bool bOK = CPublishMessage::Instance().SendMessageData(msg, error);
 	assert(bOK);
 }
