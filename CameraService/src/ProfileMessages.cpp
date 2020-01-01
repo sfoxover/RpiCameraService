@@ -73,6 +73,9 @@ void CProfileMessages::ProfilingThread(CProfileMessages* pThis)
 			double cpuUsage = Helpers::GetProcessCpuUsage();
 			items["CpuUsage"] = cpuUsage;
 
+			double tempature = Helpers::GetCpuTemperature();
+			items["CpuTempature"] = tempature;
+
 			CMessage msg = MessageFactory::Create(CSettings::Instance().GetProfilingTopic(), CMessage::MessageType::ProfilingData, items);
 			std::wstring error;
 			bool bOK = CPublishMessage::Instance().SendMessageData(msg, error);
