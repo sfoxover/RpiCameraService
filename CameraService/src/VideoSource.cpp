@@ -158,8 +158,12 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis)
 // Publish detected face images to zeroMq subscribers
 void CVideoSource::PublishDetectedFaces(cv::Mat image)
 {
+	// Encode image
+	std::vector<uchar> jpgBuffer;
+	cv::imencode(".jpg", image, jpgBuffer);
+
 	std::wstring error;
-	CMessage msg = MessageFactory::Create(CSettings::Instance().GetFaceDetectTopic(), CMessage::MessageType::Video | CMessage::MessageType::FaceDetection, image);
+	CMessage msg = MessageFactory::Create(CSettings::Instance().GetFaceDetectTopic(), CMessage::MessageType::JpegFrame | CMessage::MessageType::Video | CMessage::MessageType::FaceDetection, jpgBuffer);
 	bool bOK = CPublishMessage::Instance().SendMessageData(msg, error);
 	assert(bOK);
 }
