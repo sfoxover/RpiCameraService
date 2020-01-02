@@ -117,9 +117,9 @@ bool CommandServer::RunCommand(CMessage& command, std::wstring& error)
 	assert(!runCommand.empty());
 	if (!runCommand.empty())
 	{
-		// Change Face detect AI method
 		if (runCommand == "SetAIMethod")
 		{
+			// Change Face detect AI method
 			bool bOK = CDetectFaces::Instance().Initialize(commandArgs, &CVideoSource::PublishDetectedFaces, error);
 			if (bOK)
 			{
@@ -129,8 +129,31 @@ bool CommandServer::RunCommand(CMessage& command, std::wstring& error)
 		}
 		else if (runCommand == "GetAIMethod")
 		{
+			// Return current face detection method
 			auto result = CDetectFaces::Instance().GetDetectMethod();
 			command.SetHeaderMapValue("AIMethod", result);
+			return true;
+		}
+		else if (runCommand == "StopVideo")
+		{
+			// Stop video stream
+			bool bOK = CVideoSource::Instance().Stop(error);
+			assert(bOK);
+			return bOK;
+		}
+		else if (runCommand == "StartVideo")
+		{
+			// Start video stream
+			bool bOK = CVideoSource::Instance().Start(error);
+			assert(bOK);
+			return bOK;
+		}
+		else if (runCommand == "GetVideoPlaying")
+		{
+			// Return current face detection method
+			bool stopped = false;
+			CVideoSource::Instance().GetStoppingFlag(stopped);
+			command.SetHeaderMapValue("VideoPlaying", !stopped);
 			return true;
 		}
 	}

@@ -52,22 +52,8 @@ int main()
 				// Load sample video
 				if (bOK)
 				{
-					if (CSettings::Instance().GetUseSampleVideo())
-					{
-						auto filePath = Helpers::AppendToRunPath(Helpers::AppendPath("assets", CSettings::Instance().GetSampleVideoName()));
-						bool exists = Helpers::FileExists(filePath);
-						assert(exists);
-
-						// Publish video stream
-						bOK = CVideoSource::Instance().Start(Helpers::Utf8ToWide(filePath), error);
-						assert(bOK);
-					}
-					else
-					{
-						// Publish camera stream
-						bOK = CVideoSource::Instance().Start(error);
-						assert(bOK);
-					}				
+					bOK = CVideoSource::Instance().Start(error);
+					assert(bOK);
 				}			
 			}
 		}

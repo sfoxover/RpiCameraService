@@ -21,12 +21,12 @@ private:
 	std::thread _videoThread;
 
 	// Wait event will signal if exiting
-	std::condition_variable _stopWaitEvent;
-	std::mutex _stopWaitEventLock;
+	std::condition_variable _stopEvent;
+	std::mutex _stopEventLock;
 
-	// Exit thread flag
-	bool _exitingFlag;
-	std::mutex _exitingFlagLock;
+	// Stop video flag
+	bool _stoppingFlag;
+	std::mutex _stoppingFlagLock;
 
 	// Open cv video capture
 	cv::VideoCapture _opencvCaputure;
@@ -39,13 +39,10 @@ public:
 		return instance;
 	}
 
-	// Get set for _exitingFlag
-	void GetExitingFlag(bool &value);
-	void SetExitingFlag(bool value);
+	// Get set for _stoppingFlag
+	void GetStoppingFlag(bool &value);
+	void SetStoppingFlag(bool value);
 
-	// Start streaming video from file
-	bool Start(std::wstring filePath, std::wstring& error);
-	
 	// Start streaming video from hardware camera
 	bool Start(std::wstring& error);
 

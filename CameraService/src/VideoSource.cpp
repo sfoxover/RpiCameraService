@@ -11,7 +11,7 @@
 
 CVideoSource::CVideoSource()
 {
-	SetExitingFlag(false);
+	SetStoppingFlag(false);
 }
 
 CVideoSource::~CVideoSource()
@@ -21,47 +21,55 @@ CVideoSource::~CVideoSource()
 	assert(bOK);
 }
 
-// Get set for _exitingFlag
-void CVideoSource::GetExitingFlag(bool &value)
+// Get set for _stoppingFlag
+void CVideoSource::GetStoppingFlag(bool &value)
 {
-	_exitingFlagLock.lock();
-	value = _exitingFlag;
-	_exitingFlagLock.unlock();
+	_stoppingFlagLock.lock();
+	value = _stoppingFlag;
+	_stoppingFlagLock.unlock();
 }
 
-void CVideoSource::SetExitingFlag(bool value)
+void CVideoSource::SetStoppingFlag(bool value)
 {
-	_exitingFlagLock.lock();
-	_exitingFlag = value;
-	_exitingFlagLock.unlock();
-}
-
-// Start streaming video from file
-bool CVideoSource::Start(std::wstring filePath, std::wstring &error)
-{
-	_opencvCaputure.release();
-	_opencvCaputure.open(Helpers::WideToUtf8(filePath));
-	if (!_opencvCaputure.isOpened())
-	{
-		error = L"Error opening video file.";
-		return false;
-	}
-
-	_videoThread = std::thread(&CVideoSource::VideoStreamingThread, this);
-	return true;
+	_stoppingFlagLock.lock();
+	_stoppingFlag = value;
+	_stoppingFlagLock.unlock();
 }
 
 // Start streaming video from hardware camera
 bool CVideoSource::Start(std::wstring &error)
 {
-	_opencvCaputure.release();
-	_opencvCaputure.open(0);
-	if (!_opencvCaputure.isOpened())
+	bool bOK = Stop(error);
+	if (!bOK)
 	{
-		error = L"Error opening video camera.";
 		return false;
 	}
-
+	_opencvCaputure.release();
+	
+	// Check settings to use sample video
+	if (CSettings::Instance().GetUseSampleVideo())
+	{
+		auto filePath = Helpers::AppendToRunPath(Helpers::AppendPath("assets", CSettings::Instance().GetSampleVideoName()));
+		bool exists = Helpers::FileExists(filePath);
+		assert(exists);
+		_opencvCaputure.open(filePath);
+		if (!_opencvCaputure.isOpened())
+		{
+			error = L"Error opening video file.";
+			return false;
+		}
+	}
+	else
+	{
+		// Open default video cam
+		_opencvCaputure.open(0);
+		if (!_opencvCaputure.isOpened())
+		{
+			error = L"Error opening video camera.";
+			return false;
+		}
+	}
+	SetStoppingFlag(false);
 	_videoThread = std::thread(&CVideoSource::VideoStreamingThread, this);
 	return true;
 }
@@ -69,8 +77,8 @@ bool CVideoSource::Start(std::wstring &error)
 // Stop video streaming
 bool CVideoSource::Stop(std::wstring &error)
 {
-	SetExitingFlag(true);
-	_stopWaitEvent.notify_all();
+	SetStoppingFlag(true);
+	_stopEvent.notify_all();
 
 	if (_videoThread.joinable())
 		_videoThread.join();
@@ -101,7 +109,7 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis)
 	bool exiting = false;
 	do
 	{
-		pThis->GetExitingFlag(exiting);
+		pThis->GetStoppingFlag(exiting);
 		if (!exiting)
 		{
 			auto tmStart = std::chrono::high_resolution_clock::now();
@@ -146,8 +154,8 @@ void CVideoSource::VideoStreamingThread(CVideoSource *pThis)
 				waitDelay = 1;
 
 			// Pause for correct fps
-			std::unique_lock<std::mutex> lock(pThis->_stopWaitEventLock);
-			pThis->_stopWaitEvent.wait_for(lock, std::chrono::milliseconds((uint64_t)waitDelay));
+			std::unique_lock<std::mutex> lock(pThis->_stopEventLock);
+			pThis->_stopEvent.wait_for(lock, std::chrono::milliseconds((uint64_t)waitDelay));
 		}
 	} 
 	while (!exiting);
