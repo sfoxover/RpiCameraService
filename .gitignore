@@ -33,3 +33,4 @@
 
 build/
 /RPiClientWrapperLib/include/RPiClientWrapperLib_export.h
+/.project

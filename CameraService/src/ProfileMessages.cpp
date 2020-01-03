@@ -6,6 +6,7 @@
 #include <MessageFactory.h>
 #include <PublishMessage.h>
 #include <DetectFaces.h>
+#include "CpuUsage.h"
 using namespace std::chrono_literals;
 
 CProfileMessages::CProfileMessages()
@@ -70,7 +71,7 @@ void CProfileMessages::ProfilingThread(CProfileMessages* pThis)
 			items["AiImagesPerSec"] = imagesPerSecond;
 
 			// Get CPU usage for current process
-			double cpuUsage = Helpers::GetProcessCpuUsage();
+			double cpuUsage = CCpuUsage::GetProcessCpuUsage();
 			items["CpuUsage"] = cpuUsage;
 
 			double tempature = Helpers::GetCpuTemperature();
