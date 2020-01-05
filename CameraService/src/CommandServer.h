@@ -6,7 +6,6 @@
 #include <zmq.hpp>
 #include "Message.h"
 #include <thread>
-#include <future>
 
 class CommandServer
 {
@@ -17,8 +16,13 @@ private:
 private:
 // Properties
 
-	// Exit thread signal
-	std::unique_ptr<std::promise<void>> _stopReadThreadSignal;
+	// Wait event will signal if exiting
+	std::condition_variable _stopEvent;
+	std::mutex _stopEventLock;
+
+	// Stop video flag
+	bool _stoppingFlag;
+	std::mutex _stoppingFlagLock;
 
 	// Streaming thread
 	std::thread _readSubThread;
@@ -31,6 +35,10 @@ public:
 		return instance;
 	}
 
+	// Get set for _stoppingFlag
+	void GetStoppingFlag(bool& value);
+	void SetStoppingFlag(bool value);
+
 	// Start streaming video from hardware camera
 	bool Start(std::wstring& error);
 
@@ -38,7 +46,7 @@ public:
 	bool Stop(std::wstring& error);
 
 	// Server read messages thread
-	static void ReadThread(CommandServer* pThis, std::future<void> futureObj, std::unique_ptr<zmq::socket_t> subscriber, std::unique_ptr<zmq::context_t> context);
+	static void ReadThread(CommandServer* pThis, std::unique_ptr<zmq::socket_t> subscriber, std::unique_ptr<zmq::context_t> context);
 
 	// Execute command and return result
 	bool RunCommand(CMessage& command, std::wstring& error);

@@ -3,7 +3,6 @@
 	Read video data and send to pubisher
 */
 #include <thread>
-#include <future>
 #include <chrono>
 #include <condition_variable>
 #include <opencv2/opencv.hpp>
