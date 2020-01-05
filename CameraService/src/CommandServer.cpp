@@ -120,7 +120,7 @@ bool CommandServer::RunCommand(CMessage& command, std::wstring& error)
 		if (runCommand == "SetAIMethod")
 		{
 			// Change Face detect AI method
-			bool bOK = CDetectFaces::Instance().Initialize(commandArgs, &CVideoSource::PublishDetectedFaces, error);
+			bool bOK = CDetectFaces::Instance().Start(commandArgs, &CVideoSource::PublishDetectedFaces, error);
 			if (bOK)
 			{
 				CSettings::Instance().SetUseFaceDetect(commandArgs != "Off");
@@ -130,8 +130,9 @@ bool CommandServer::RunCommand(CMessage& command, std::wstring& error)
 		else if (runCommand == "GetAIMethod")
 		{
 			// Return current face detection method
-			auto result = CDetectFaces::Instance().GetDetectMethod();
-			command.SetHeaderMapValue("AIMethod", result);
+			std::string method;
+			CDetectFaces::Instance().GetDetectMethod(method);
+			command.SetHeaderMapValue("AIMethod", method);
 			return true;
 		}
 		else if (runCommand == "StopVideo")
