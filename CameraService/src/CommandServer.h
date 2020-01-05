@@ -6,6 +6,7 @@
 #include <zmq.hpp>
 #include "Message.h"
 #include <thread>
+#include <condition_variable>
 
 class CommandServer
 {
