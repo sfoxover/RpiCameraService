@@ -39,10 +39,15 @@ ZeroMQ for linux
 DLib 
 * go to site http://dlib.net/compile.html
 * download latest zip file
-* configure with cmake guid
-* build
-* run as admin and build install
-* set path environment variables
+* mkdir build
+cd build
+cmake ..
+cmake --build . --config Release
+
+Fix for header file
+vim /usr/local/include/dlib/opencv/cv_image.h
+line 37
+temp = cvIplImage(img);
 
 GPIO for C++
 * https://github.com/JoachimSchurig/CppGPIO
