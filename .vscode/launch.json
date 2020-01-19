@@ -12,7 +12,14 @@
             "cwd": "${workspaceRoot}",
             "valuesFormatting": "parseText"
         },
-
+        {
+            "type": "gdb",
+            "request": "launch",
+            "name": "Unittest Linux",
+            "target": "./build/bin/unittest",
+            "cwd": "${workspaceRoot}",
+            "valuesFormatting": "parseText"
+        },
         {
             "name": "(Windows) Launch",
             "type": "cppvsdbg",
