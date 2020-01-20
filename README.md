@@ -1,3 +1,16 @@
+# Git Check out commands
+git clone https://github.com/sfoxover/RpiCameraService.git
+
+## git switch submodule to origin/master so you can commit submodule to the server instead of a local headless branch
+git checkout -B master remotes/origin/master --
+
+## Update submodules after initial init command
+git submodule update --progress --recursive -- "Imports/AiDetectLib"
+git submodule update --progress --recursive -- "Imports/GTestLib"
+git submodule update --progress --recursive -- "Imports/JsoncppLib"
+git submodule update --progress --recursive -- "Imports/MessagesLib"
+
+
 # RPiCamera
 OpenCV Camera code for RPi4
 
