@@ -4,7 +4,7 @@
 	"CmdServerEndpoint": "tcp://*:5564",
 	"CmdClientEndpoint": "tcp://127.0.0.1:5564",
 	"VideoSettings": {
-		"StreamSampleVideo": true,
+		"StreamSampleVideo": false,
 		"SampleVideoName": "Serenity.mp4",
 		"RunFaceDetection": true,
 		"FaceDetectionMethod": "OpenCV"
