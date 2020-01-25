@@ -145,14 +145,13 @@ bool CommandServer::RunCommand(CMessage& command, std::wstring& error)
 				CSettings::Instance().SetUseFaceDetect(commandArgs != "Off");
 			}
 			return bOK;
-		}
-		else if (runCommand == "GetAIMethod")
+		}		
+		else if (runCommand == "SetUseSampleVideo")
 		{
-			// Return current face detection method
-			std::string method;
-			CDetectFaces::Instance().GetDetectMethod(method);
-			command.SetHeaderMapValue("AIMethod", method);
-			return true;
+			CSettings::Instance().SetUseSampleVideo(Helpers::StringEqualsIgnoreCase(commandArgs, "true"));
+			bool bOK = CVideoSource::Instance().Start(error);
+			assert(bOK);
+			return bOK;
 		}
 		else if (runCommand == "StopVideo")
 		{
@@ -168,12 +167,24 @@ bool CommandServer::RunCommand(CMessage& command, std::wstring& error)
 			assert(bOK);
 			return bOK;
 		}
-		else if (runCommand == "GetVideoPlaying")
+		else if (runCommand == "GetCurrentSettings")
 		{
-			// Return current face detection method
+			// Return current settings
+			std::map<std::string, std::any> settings;
+			std::string method;
+			CDetectFaces::Instance().GetDetectMethod(method);
+			settings["AIMethod"] = method;
+		
+			// Is video playback on
 			bool stopped = false;
 			CVideoSource::Instance().GetStoppingFlag(stopped);
-			command.SetHeaderMapValue("VideoPlaying", !stopped);
+			settings["VideoPlaying"] = !stopped;
+
+			// Is sample video being used
+			settings["UseSampleVideoFile"] = CSettings::Instance().GetUseSampleVideo();
+
+			// Return selected settings as json
+			command.SetHeaderMapValue("Settings", settings);
 			return true;
 		}
 	}
