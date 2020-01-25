@@ -122,16 +122,11 @@ bool CommandServer::RunCommand(CMessage& command, std::wstring& error)
 	}
 
 	// Get command type and value
-	std::string runCommand;
-	std::string commandArgs;
+	std::string runCommand;	
 	std::any value;
 	if (command.GetHeaderMapValue("Command", value))
 	{
 		CASTANY(value, runCommand);
-	}
-	if (command.GetHeaderMapValue("Value", value))
-	{
-		CASTANY(value, commandArgs);
 	}
 	assert(!runCommand.empty());
 	if (!runCommand.empty())
@@ -139,6 +134,17 @@ bool CommandServer::RunCommand(CMessage& command, std::wstring& error)
 		if (runCommand == "SetAIMethod")
 		{
 			// Change Face detect AI method
+			std::string commandArgs;
+			if (command.GetHeaderMapValue("Value", value))
+			{
+				CASTANY(value, commandArgs);
+			}
+			assert(!commandArgs.empty());
+			if (commandArgs.empty())
+			{
+				error = L"SetAIMethod command is missing method argument.";
+				return false;
+			}
 			bool bOK = CDetectFaces::Instance().Start(commandArgs, &CVideoSource::PublishDetectedFaces, error);
 			if (bOK)
 			{
@@ -148,7 +154,12 @@ bool CommandServer::RunCommand(CMessage& command, std::wstring& error)
 		}		
 		else if (runCommand == "SetUseSampleVideo")
 		{
-			CSettings::Instance().SetUseSampleVideo(Helpers::StringEqualsIgnoreCase(commandArgs, "true"));
+			bool useSample = true;
+			if (command.GetHeaderMapValue("Value", value))
+			{
+				CASTANY(value, useSample);
+			}
+			CSettings::Instance().SetUseSampleVideo(useSample);
 			bool bOK = CVideoSource::Instance().Start(error);
 			assert(bOK);
 			return bOK;
@@ -190,7 +201,7 @@ bool CommandServer::RunCommand(CMessage& command, std::wstring& error)
 	}
 
 	std::wstringstream szErr;
-	szErr << L"Error, unsupported command:" << Helpers::Utf8ToWide(runCommand) << L", args:" << Helpers::Utf8ToWide(commandArgs) << ".";
+	szErr << L"Error, unsupported command:" << Helpers::Utf8ToWide(runCommand) << ".";
 	error = szErr.str();
 	return false;
 }
