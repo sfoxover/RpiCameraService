@@ -1,14 +1,9 @@
+# Raspberry Pi camera service
+
+Here are some notes for checking out an building the project. You will need to install all 3rd party libraries and check out all submodules with init. 
+
 # Git Check out commands
 git clone https://github.com/sfoxover/RpiCameraService.git
-
-## Update submodules after initial init command
-* git submodule update --progress --recursive -- "Imports/AiDetectLib"
-* git submodule update --progress --recursive -- "Imports/GTestLib"
-* git submodule update --progress --recursive -- "Imports/JsoncppLib"
-* git submodule update --progress --recursive -- "Imports/MessagesLib"
-
-## git switch submodule to origin/master so you can commit submodule to the server instead of a local headless branch
-git checkout -B master remotes/origin/master --
 
 ## Recommended extensions for Visual Studio Code
 * "Remote Development" - Microsoft. https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack
@@ -16,9 +11,6 @@ git checkout -B master remotes/origin/master --
 * CMake - twxs
 * CMake Tools - vector-of-bool
 * Native Debug - WebFreak
-
-# RPiCamera
-OpenCV Camera code for RPi4
 
 ## How to build for Linux
 
